@@ -1,0 +1,1 @@
+# shindiri_studio_test
