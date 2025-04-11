@@ -1,7 +1,13 @@
+import { Box, CircularProgress } from "@mui/material";
+
 const Loader = () => (
-  <div className="flex justify-center items-center">
-    <div className="animate-spin rounded-full border-t-2 border-blue-500 w-12 h-12"></div>
-  </div>
+  <Box
+    display="flex"
+    justifyContent="center"
+    alignItems="center"
+    minHeight="200px">
+    <CircularProgress color="primary" />
+  </Box>
 );
 
 export default Loader;

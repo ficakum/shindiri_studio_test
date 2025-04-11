@@ -2,6 +2,7 @@ import { useState, useRef, useCallback } from "react";
 import { useCharacters } from "../hooks/useCharacters";
 import CharacterCard from "../components/CharacterCard";
 import Loader from "../components/Loader";
+import { Box, Typography, TextField, CircularProgress } from "@mui/material";
 
 const Characters = () => {
   const [search, setSearch] = useState("");
@@ -33,46 +34,54 @@ const Characters = () => {
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
-    refetch(); // refetch when search input changes
+    refetch();
   };
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Characters</h1>
-      <input
-        type="text"
-        placeholder="Search characters..."
+    <Box p={4}>
+      <Typography variant="h4" fontWeight="bold" gutterBottom>
+        Characters
+      </Typography>
+
+      <TextField
+        label="Search characters..."
+        variant="outlined"
+        fullWidth
         value={search}
         onChange={handleSearch}
-        className="mb-4 p-2 border rounded w-full md:w-1/3"
+        sx={{ mb: 4, maxWidth: 400 }}
       />
 
-      {/* Loader */}
       {isLoading ? (
         <Loader />
       ) : (
         <>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <Box display="grid" gridTemplateColumns="repeat(12, 1fr)" gap={3}>
             {data?.pages.map((page, pageIndex) =>
               page.results.map((character: any, charIndex: number) => {
                 const isLast =
                   pageIndex === data.pages.length - 1 &&
                   charIndex === page.results.length - 1;
                 return (
-                  <div key={character.id} ref={isLast ? lastElementRef : null}>
+                  <Box
+                    key={character.id}
+                    gridColumn="span 3"
+                    ref={isLast ? lastElementRef : null}>
                     <CharacterCard character={character} />
-                  </div>
+                  </Box>
                 );
               })
             )}
-          </div>
+          </Box>
 
           {isFetchingNextPage && (
-            <p className="text-center mt-4">Loading more...</p>
+            <Box mt={4} display="flex" justifyContent="center">
+              <CircularProgress />
+            </Box>
           )}
         </>
       )}
-    </div>
+    </Box>
   );
 };
 

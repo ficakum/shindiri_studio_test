@@ -1,8 +1,9 @@
-// src/pages/Auth/SignUp.tsx
 import { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase/config";
 import { useNavigate, Link } from "react-router-dom";
+import { Box, Button, TextField, Typography, Paper } from "@mui/material";
+import { ROUTES } from "constants/routes";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -14,50 +15,75 @@ const SignUp = () => {
     e.preventDefault();
     setError("");
     try {
-      console.log(email, password);
       await createUserWithEmailAndPassword(auth, email, password);
-      navigate("/characters");
+      navigate(`/${ROUTES.CHARACTERS}`);
     } catch (err: any) {
       setError(err.message);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <form
-        onSubmit={handleSignUp}
-        className="bg-white p-6 rounded shadow-md w-80">
-        <h2 className="text-2xl font-bold mb-4">Sign Up</h2>
-        <input
-          type="email"
-          placeholder="Email"
-          className="w-full mb-2 p-2 border rounded"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          className="w-full mb-4 p-2 border rounded"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
-        <button
-          type="submit"
-          className="w-full bg-green-600 text-white py-2 rounded">
+    <Box
+      sx={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "background.default",
+      }}>
+      <Paper elevation={3} sx={{ padding: 4, width: 320 }}>
+        <Typography variant="h5" align="center" fontWeight="bold" gutterBottom>
           Sign Up
-        </button>
-        <p className="mt-4 text-sm text-center">
+        </Typography>
+        <form onSubmit={handleSignUp}>
+          <TextField
+            label="Email"
+            type="email"
+            variant="outlined"
+            fullWidth
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            margin="normal"
+          />
+          <TextField
+            label="Password"
+            type="password"
+            variant="outlined"
+            fullWidth
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            margin="normal"
+          />
+          {error && (
+            <Typography
+              color="error"
+              variant="body2"
+              align="center"
+              sx={{ mb: 2 }}>
+              {error}
+            </Typography>
+          )}
+          <Button
+            type="submit"
+            variant="contained"
+            color="success"
+            fullWidth
+            sx={{ mt: 2 }}>
+            Sign Up
+          </Button>
+        </form>
+        <Typography variant="body2" align="center" sx={{ mt: 2 }}>
           Already have an account?{" "}
-          <Link to="/login" className="text-blue-500">
-            Login
+          <Link to={`/${ROUTES.LOGIN}`} style={{ textDecoration: "none" }}>
+            <Typography color="primary" component="span">
+              Login
+            </Typography>
           </Link>
-        </p>
-      </form>
-    </div>
+        </Typography>
+      </Paper>
+    </Box>
   );
 };
 

@@ -1,23 +1,22 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { ROUTES } from "../constants/routes";
+import { ACCESS_TOKEN_KEY } from "../constants/auth";
 
 const AuthRedirect = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Proveri da li postoji token u localStorage
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem(ACCESS_TOKEN_KEY);
 
-    // Ako nema tokena, preusmeri korisnika na Login stranicu
     if (!token) {
-      navigate("/login");
+      navigate(`/${ROUTES.LOGIN}`);
     } else {
-      // Ako postoji token, preusmeri na Characters stranicu
-      navigate("/characters");
+      navigate(`/${ROUTES.CHARACTERS}`);
     }
   }, [navigate]);
 
-  return null; // Ova komponenta se ne prikazuje, samo obavlja preusmeravanje
+  return null;
 };
 
 export default AuthRedirect;

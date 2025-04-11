@@ -3,6 +3,9 @@ import { useParams, Link } from "react-router-dom";
 import { api } from "../api/rickAndMortyApi";
 import Loader from "../components/Loader";
 import CharacterCard from "../components/CharacterCard";
+import { Box, Typography, Paper } from "@mui/material";
+import { ROUTES } from "constants/routes";
+import { EPISODE_LINK } from "constants/rickAndMortyApi";
 
 const EpisodeDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -13,11 +16,9 @@ const EpisodeDetails = () => {
   useEffect(() => {
     const fetchEpisodeDetails = async () => {
       try {
-        // Fetch episode details
-        const res = await api.get(`/episode/${id}`);
+        const res = await api.get(`/${EPISODE_LINK}/${id}`);
         setEpisode(res.data);
 
-        // Fetch characters for the episode
         const characterPromises = res.data.characters.map(
           (characterUrl: string) => api.get(characterUrl)
         );
@@ -36,38 +37,51 @@ const EpisodeDetails = () => {
   if (loading) return <Loader />;
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Episode Details</h1>
-      <div className="mb-6">
-        <p className="text-lg font-semibold">Episode Name:</p>
-        <p>{episode.name}</p>
+    <Box p={4}>
+      <Typography variant="h4" fontWeight="bold" gutterBottom>
+        Episode Details
+      </Typography>
 
-        <p className="text-lg font-semibold mt-2">Season:</p>
-        <p>{episode.episode.split(" ")[0]}</p>
+      <Box mb={4}>
+        <Typography variant="h6" fontWeight="bold">
+          Episode Name:
+        </Typography>
+        <Typography>{episode.name}</Typography>
 
-        <p className="text-lg font-semibold mt-2">Episode Number:</p>
-        <p>{episode.episode.split(" ")[1]}</p>
-      </div>
+        <Typography variant="h6" fontWeight="bold" mt={2}>
+          Season:
+        </Typography>
+        <Typography>{episode.episode.split(" ")[0]}</Typography>
 
-      <div>
-        <h2 className="text-xl font-semibold mb-4">
+        <Typography variant="h6" fontWeight="bold" mt={2}>
+          Episode Number:
+        </Typography>
+        <Typography>{episode.episode.split(" ")[1]}</Typography>
+      </Box>
+
+      <Box>
+        <Typography variant="h6" fontWeight="bold" mb={2}>
           Characters in this episode:
-        </h2>
+        </Typography>
         {characters.length === 0 ? (
-          <p>No characters found in this episode.</p>
+          <Typography>No characters found in this episode.</Typography>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <Box display="flex" flexWrap="wrap" gap={3}>
             {characters.map((character: any) => (
-              <div key={character.id}>
-                <Link to={`/characters/${character.id}`}>
-                  <CharacterCard character={character} />
+              <Box
+                key={character.id}
+                width={{ xs: "100%", sm: "48%", md: "23%" }}>
+                <Link to={`/${ROUTES.CHARACTERS}/${character.id}`}>
+                  <Paper elevation={3} sx={{ padding: 2 }}>
+                    <CharacterCard character={character} />
+                  </Paper>
                 </Link>
-              </div>
+              </Box>
             ))}
-          </div>
+          </Box>
         )}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

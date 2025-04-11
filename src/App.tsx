@@ -7,24 +7,23 @@ import LocationDetails from "./pages/LocationDetails";
 import EpisodeDetails from "./pages/EpisodeDetails";
 import Login from "./pages/Login";
 import Signup from "./pages/SignUp";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"; // Import QueryClient and QueryClientProvider
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AuthRedirect from "./components/AuthRedirect";
+import { ROUTES } from "constants/routes";
 
-// Create a client for react-query
 const queryClient = new QueryClient();
 
 const App = () => (
   <AuthProvider>
     <QueryClientProvider client={queryClient}>
       {" "}
-      {/* Wrap the entire app in QueryClientProvider */}
       <Router>
         <Routes>
           <Route path="/" element={<AuthRedirect />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
+          <Route path={`/${ROUTES.LOGIN}`} element={<Login />} />
+          <Route path={`/${ROUTES.SIGNUP}`} element={<Signup />} />
           <Route
-            path="/characters"
+            path={`/${ROUTES.CHARACTERS}`}
             element={
               <PrivateRoute>
                 <Characters />
@@ -32,7 +31,7 @@ const App = () => (
             }
           />
           <Route
-            path="/characters/:id"
+            path={`/${ROUTES.CHARACTERS}/:id`}
             element={
               <PrivateRoute>
                 <CharacterDetails />
@@ -40,7 +39,7 @@ const App = () => (
             }
           />
           <Route
-            path="/location/:id"
+            path={`/${ROUTES.LOCATION}/:id`}
             element={
               <PrivateRoute>
                 <LocationDetails />
@@ -48,7 +47,7 @@ const App = () => (
             }
           />
           <Route
-            path="/episode/:id"
+            path={`/${ROUTES.EPISODE}/:id`}
             element={
               <PrivateRoute>
                 <EpisodeDetails />
@@ -58,7 +57,6 @@ const App = () => (
         </Routes>
       </Router>
     </QueryClientProvider>{" "}
-    {/* End of QueryClientProvider */}
   </AuthProvider>
 );
 

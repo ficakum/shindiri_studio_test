@@ -3,6 +3,9 @@ import { useParams, Link } from "react-router-dom";
 import { api } from "../api/rickAndMortyApi";
 import Loader from "../components/Loader";
 import CharacterCard from "../components/CharacterCard";
+import { Box, Typography, Paper } from "@mui/material";
+import { ROUTES } from "constants/routes";
+import { LOCATION_LINK } from "constants/rickAndMortyApi";
 
 const LocationDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -13,11 +16,9 @@ const LocationDetails = () => {
   useEffect(() => {
     const fetchLocationDetails = async () => {
       try {
-        // Fetch location details
-        const res = await api.get(`/location/${id}`);
+        const res = await api.get(`/${LOCATION_LINK}/${id}`);
         setLocation(res.data);
 
-        // Fetch characters for the location
         const characterPromises = res.data.residents.map(
           (characterUrl: string) => api.get(characterUrl)
         );
@@ -36,36 +37,51 @@ const LocationDetails = () => {
   if (loading) return <Loader />;
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Location Details</h1>
-      <div className="mb-6">
-        <p className="text-lg font-semibold">Location Name:</p>
-        <p>{location.name}</p>
+    <Box p={4}>
+      <Typography variant="h4" fontWeight="bold" gutterBottom>
+        Location Details
+      </Typography>
 
-        <p className="text-lg font-semibold mt-2">Location Type:</p>
-        <p>{location.type}</p>
+      <Box mb={4}>
+        <Typography variant="h6" fontWeight="bold">
+          Location Name:
+        </Typography>
+        <Typography>{location.name}</Typography>
 
-        <p className="text-lg font-semibold mt-2">Dimension:</p>
-        <p>{location.dimension}</p>
-      </div>
+        <Typography variant="h6" fontWeight="bold" mt={2}>
+          Location Type:
+        </Typography>
+        <Typography>{location.type}</Typography>
 
-      <div>
-        <h2 className="text-xl font-semibold mb-4">Residents:</h2>
+        <Typography variant="h6" fontWeight="bold" mt={2}>
+          Dimension:
+        </Typography>
+        <Typography>{location.dimension}</Typography>
+      </Box>
+
+      <Box>
+        <Typography variant="h6" fontWeight="bold" mb={2}>
+          Residents:
+        </Typography>
         {characters.length === 0 ? (
-          <p>No characters found at this location.</p>
+          <Typography>No characters found at this location.</Typography>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <Box display="flex" flexWrap="wrap" gap={3}>
             {characters.map((character: any) => (
-              <div key={character.id}>
-                <Link to={`/characters/${character.id}`}>
-                  <CharacterCard character={character} />
+              <Box
+                key={character.id}
+                width={{ xs: "100%", sm: "48%", md: "23%" }}>
+                <Link to={`/${ROUTES.CHARACTERS}/${character.id}`}>
+                  <Paper elevation={3} sx={{ padding: 2 }}>
+                    <CharacterCard character={character} />
+                  </Paper>
                 </Link>
-              </div>
+              </Box>
             ))}
-          </div>
+          </Box>
         )}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

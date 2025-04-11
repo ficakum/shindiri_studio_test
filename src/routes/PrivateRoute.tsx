@@ -2,6 +2,7 @@ import { JSX } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
 import Header from "../components/Header";
+import { ROUTES } from "constants/routes";
 
 const PrivateRoute = ({ children }: { children: JSX.Element }) => {
   const { user, loading } = useAuthContext();
@@ -10,11 +11,11 @@ const PrivateRoute = ({ children }: { children: JSX.Element }) => {
 
   return user ? (
     <div>
-      <Header /> {/* Prikazivanje Header-a na privatnim stranicama */}
+      <Header />
       {children}
     </div>
   ) : (
-    <Navigate to="/login" />
+    <Navigate to={`/${ROUTES.LOGIN}`} />
   );
 };
 

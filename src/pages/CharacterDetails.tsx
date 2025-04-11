@@ -1,7 +1,20 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link as RouterLink } from "react-router-dom";
 import { api } from "../api/rickAndMortyApi";
 import Loader from "../components/Loader";
+
+import {
+  Box,
+  Typography,
+  Avatar,
+  Link,
+  List,
+  ListItem,
+  ListItemText,
+  Paper,
+} from "@mui/material";
+import { ROUTES } from "constants/routes";
+import { CHARACTER_LINK, LOCATION_LINK } from "constants/rickAndMortyApi";
 
 const CharacterDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -13,21 +26,21 @@ const CharacterDetails = () => {
   useEffect(() => {
     const fetchCharacterDetails = async () => {
       try {
-        const res = await api.get(`/character/${id}`);
+        const res = await api.get(`/${CHARACTER_LINK}/${id}`);
         setCharacter(res.data);
 
-        // Fetch episodes
         const episodesPromises = res.data.episode.map((ep: string) =>
           api.get(ep)
         );
         const episodesData = await Promise.all(episodesPromises);
         setEpisodes(episodesData.map((ep) => ep.data));
 
-        // Fetch location
-        const locationRes = await api.get(
-          `/location/${res.data.location.url.split("/").pop()}`
-        );
-        setLocation(locationRes.data);
+        const locationUrl = res.data.location.url;
+        if (locationUrl) {
+          const locationId = locationUrl.split("/").pop();
+          const locationRes = await api.get(`/${LOCATION_LINK}/${locationId}`);
+          setLocation(locationRes.data);
+        }
       } catch (error) {
         console.error(error);
       } finally {
@@ -41,47 +54,66 @@ const CharacterDetails = () => {
   if (loading) return <Loader />;
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Character Details</h1>
-      <div className="flex">
-        <img
+    <Box p={4}>
+      <Typography variant="h4" gutterBottom>
+        Character Details
+      </Typography>
+
+      <Paper elevation={3} sx={{ display: "flex", p: 3, gap: 3 }}>
+        <Avatar
           src={character.image}
           alt={character.name}
-          className="rounded-full w-48 h-48 object-cover mr-6"
+          sx={{ width: 128, height: 128 }}
         />
-        <div>
-          <h2 className="text-xl font-semibold">{character.name}</h2>
-          <p>Status: {character.status}</p>
-          <p>Species: {character.species}</p>
-          <p>Gender: {character.gender}</p>
+        <Box>
+          <Typography variant="h5" fontWeight="bold">
+            {character.name}
+          </Typography>
+          <Typography>Status: {character.status}</Typography>
+          <Typography>Species: {character.species}</Typography>
+          <Typography>Gender: {character.gender}</Typography>
 
-          <div className="mt-4">
-            <p className="font-semibold">Location:</p>
+          <Box mt={2}>
+            <Typography fontWeight="bold">Location:</Typography>
             {location ? (
-              <Link to={`/location/${location.id}`} className="text-blue-500">
+              <Link
+                component={RouterLink}
+                to={`/${ROUTES.LOCATION}/${location.id}`}
+                color="primary">
                 {location.name}
               </Link>
             ) : (
-              <p>Loading location...</p>
+              <Typography>Loading location...</Typography>
             )}
-          </div>
+          </Box>
 
-          <div className="mt-4">
-            <p className="font-semibold">Episodes:</p>
-            <ul>
+          <Box mt={2}>
+            <Typography fontWeight="bold">Episodes:</Typography>
+            <List dense>
               {episodes.map((episode) => (
-                <li key={episode.id}>
-                  <Link to={`/episode/${episode.id}`} className="text-blue-500">
-                    {episode.name} (Season {episode.season}, Episode{" "}
-                    {episode.number})
-                  </Link>
-                </li>
+                <ListItem
+                  key={episode.id}
+                  sx={{ pl: 0 }}
+                  disableGutters
+                  divider>
+                  <ListItemText
+                    primary={
+                      <Link
+                        component={RouterLink}
+                        to={`/${ROUTES.EPISODE}/${episode.id}`}
+                        color="primary">
+                        {episode.name} (Season {episode.season}, Episode{" "}
+                        {episode.number})
+                      </Link>
+                    }
+                  />
+                </ListItem>
               ))}
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
+            </List>
+          </Box>
+        </Box>
+      </Paper>
+    </Box>
   );
 };
 
