@@ -44,3 +44,8 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
+
+
+# Architecture of the project
+
+Since the project is small and contains small number of components and pages all are stored in one components and one pages folder. If it was greater there would be features folder which would contain subfolders for each separate entity in which would be components, pages, hooks, etc. used only for that entity, while some shared and global hooks, components, etc would remain in global folders.
