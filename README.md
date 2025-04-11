@@ -49,3 +49,7 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 # Architecture of the project
 
 Since the project is small and contains small number of components and pages all are stored in one components and one pages folder. If it was greater there would be features folder which would contain subfolders for each separate entity in which would be components, pages, hooks, etc. used only for that entity, while some shared and global hooks, components, etc would remain in global folders.
+
+# ENV file recreation
+
+There is an .env.example file which contains names of variables which should be put in .env file. Their values should be replaced with values of corresponding variables sent in document describing test. Values of .env variables in .env.example are the names of variables sent in document with whose values those names should be replaced.
